@@ -1,11 +1,7 @@
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
 
 if (!API_URL) {
-  throw new Error('EXPO_PUBLIC_API_URL no definida en .env');
-}
-
-export class ApiError extends Error {
-  status?: number;
+  throw new Error('EXPO_PUBLIC_API_URL no está definida en el .env');
 }
 
 export async function apiFetch<T>(
@@ -21,9 +17,8 @@ export async function apiFetch<T>(
   });
 
   if (!response.ok) {
-    const error = new ApiError(await response.text());
-    error.status = response.status;
-    throw error;
+    const text = await response.text();
+    throw new Error(text || 'Error en la API');
   }
 
   return response.json();
