@@ -1,7 +1,7 @@
 export interface Equipo {
   id: number;
-  nombre: string;
-  tipo: string;
+  estado: string;
+  departamento: string;
   ubicacion: string;
 }
 
