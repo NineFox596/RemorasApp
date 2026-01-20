@@ -1,13 +1,16 @@
 import { apiFetch } from './client';
 import { Problema } from '../types/api';
 
-export const getProblemas = () =>
-  apiFetch<Problema[]>('/api/problemas');
+export const getProblemas = () => {
+  return apiFetch<Problema[]>('/problemas');
+};
 
-export const getProblemaById = (id: number) =>
-  apiFetch<Problema>(`/api/problemas/${id}`);
+export const getProblemaById = (id: number) => {
+  return apiFetch<Problema>(`/problemas/${id}`);
+};
 
-export const solucionarProblema = (id: number) =>
-  apiFetch(`/api/problemas/${id}/solucionar`, {
+export const solucionarProblema = (id: number) => {
+  return apiFetch(`/problemas/${id}/solucionar`, {
     method: 'PUT',
   });
+};
