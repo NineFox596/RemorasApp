@@ -3,7 +3,13 @@ export interface Equipo {
   estado: string;
   departamento: string;
   ubicacion: string;
+
+  usuario?: {
+    id: number;
+    nombre: string;
+  } | null;
 }
+
 
 export interface Problema {
   id: number;
