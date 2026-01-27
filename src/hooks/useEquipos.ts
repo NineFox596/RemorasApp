@@ -7,12 +7,21 @@ export function useEquipos() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
+  const load = () => {
+    setLoading(true);
+    setError(null);
     getEquipos()
       .then(setData)
-      .catch(err => setError(err.message))
+      .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
-  }, []);
+  };
 
-  return { equipos: data, loading, error };
+  useEffect(load, []);
+
+  return {
+    equipos: data,
+    loading,
+    error,
+    reload: load,
+  };
 }

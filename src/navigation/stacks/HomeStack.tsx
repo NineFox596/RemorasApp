@@ -1,0 +1,20 @@
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import  HomeScreen  from '../../screens/HomeScreen';
+
+export type HomeStackParamList = {
+  HomeMain: undefined;
+};
+
+const Stack = createNativeStackNavigator<HomeStackParamList>();
+
+export default function HomeStack() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="HomeMain"
+        component={HomeScreen}
+        options={{ title: 'Inicio' }}
+      />
+    </Stack.Navigator>
+  );
+}

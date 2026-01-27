@@ -1,83 +1,100 @@
-import { ScrollView, Text, View } from 'react-native';
+import { View, Text, ActivityIndicator } from 'react-native';
 import { useEquipos } from '../hooks/useEquipos';
 import { useProblemas } from '../hooks/useProblemas';
-import { getEquipoComponentes, EquipoComponente } from '../api/componentes';
-import { useEffect, useState } from 'react';
 
-export function HomeScreen() {
-  const { equipos, loading, error } = useEquipos();
-  const { problemas } = useProblemas();
+function StatCard({
+  title,
+  value,
+  subtitle,
+}: {
+  title: string;
+  value: string | number;
+  subtitle?: string;
+}) {
+  return (
+    <View className="flex-1 rounded-xl border border-gray-200 p-4 bg-white">
+      <Text className="text-gray-500 text-sm">{title}</Text>
+      <Text className="text-2xl font-semibold mt-1">{value}</Text>
+      {subtitle && (
+        <Text className="text-gray-400 text-xs mt-1">{subtitle}</Text>
+      )}
+    </View>
+  );
+}
 
-  const [componentes, setComponentes] = useState<EquipoComponente[]>([]);
+export default function HomeScreen() {
+  const {
+    equipos,
+    loading: loadingEquipos,
+    error: errorEquipos,
+  } = useEquipos();
 
-  useEffect(() => {
-    getEquipoComponentes().then(setComponentes);
-  }, []);
+  const {
+    problemas,
+    loading: loadingProblemas,
+    error: errorProblemas,
+  } = useProblemas();
 
-  if (loading) return <Text>Cargando equipos...</Text>;
-  if (error) return <Text>Error: {error}</Text>;
+  const loading = loadingEquipos || loadingProblemas;
+  const error = errorEquipos || errorProblemas;
+
+  if (loading) {
+    return (
+      <View className="flex-1 items-center justify-center bg-white">
+        <ActivityIndicator size="large" />
+        <Text className="mt-2 text-gray-500">Cargando resumen…</Text>
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View className="flex-1 items-center justify-center bg-white px-6">
+        <Text className="text-red-600 text-center mb-2">
+          Ocurrió un error al cargar el resumen
+        </Text>
+        <Text className="text-gray-500 text-center">
+          {error}
+        </Text>
+      </View>
+    );
+  }
+
+  const totalEquipos = equipos.length;
+  const equiposConProblemas = equipos.filter(e => e.tiene_problema).length;
+
+  const totalProblemas = problemas.length;
+  const problemasPendientes = problemas.filter(p => !p.reparado).length;
 
   return (
-    <ScrollView style={{ padding: 16 }}>
-      <Text style={{ fontSize: 22, fontWeight: 'bold' }}>
-        Equipos (Debug)
-      </Text>
+    <View className="flex-1 bg-white p-4">
+      <Text className="text-2xl font-semibold mb-4">Resumen</Text>
 
-      {equipos.map(e => {
-        const componentesEquipo = componentes.filter(
-          c => c.equipo_id === e.id
-        );
+      <View className="flex-row gap-3 mb-3">
+        <StatCard
+          title="Equipos"
+          value={totalEquipos}
+          subtitle="Total registrados"
+        />
+        <StatCard
+          title="Con problemas"
+          value={equiposConProblemas}
+          subtitle="Equipos afectados"
+        />
+      </View>
 
-        const problemasEquipo = problemas.filter(
-          p => p.equipo_id === e.id
-        );
-
-        return (
-          <View
-            key={e.id}
-            style={{
-              marginVertical: 12,
-              padding: 12,
-              borderWidth: 1,
-            }}
-          >
-            <Text>Equipo ID: {e.id}</Text> 
-            <Text>Estado: {e.estado}</Text>
-            <Text>
-              Departamento: {e.departamento} ({e.ubicacion})
-            </Text>
-
-            <Text style={{ marginTop: 8, fontWeight: 'bold' }}>
-              Componentes ({componentesEquipo.length})
-            </Text>
-
-            {componentesEquipo.length === 0 && (
-              <Text>- Sin componentes</Text>
-            )}
-
-            {componentesEquipo.map((c, idx) => (
-              <Text key={`${c.componente_id}-${idx}`}>
-                - {c.nombre} ({c.tipo}) x{c.cantidad}
-                {'\n'}  {c.descripcion}
-              </Text>
-            ))}
-
-            <Text style={{ marginTop: 8, fontWeight: 'bold' }}>
-              Problemas ({problemasEquipo.length})
-            </Text>
-
-            {problemasEquipo.length === 0 && (
-              <Text>- Sin problemas</Text>
-            )}
-
-            {problemasEquipo.map(p => (
-              <Text key={p.id}>
-                - {p.descripcion} [{p.reparado ? 'OK' : 'Pendiente'}]
-              </Text>
-            ))}
-          </View>
-        );
-      })}
-    </ScrollView>
+      <View className="flex-row gap-3">
+        <StatCard
+          title="Problemas"
+          value={totalProblemas}
+          subtitle="Total reportados"
+        />
+        <StatCard
+          title="Pendientes"
+          value={problemasPendientes}
+          subtitle="Sin resolver"
+        />
+      </View>
+    </View>
   );
 }

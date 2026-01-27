@@ -1,9 +1,11 @@
-export interface Equipo {
+export type Equipo = {
   id: number;
   estado: string;
   departamento: string;
   ubicacion: string;
-}
+  tiene_problema: boolean;
+  fecha_control: string | null;
+};
 
 export interface Problema {
   id: number;
