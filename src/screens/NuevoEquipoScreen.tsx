@@ -2,42 +2,44 @@ import { useState } from 'react';
 import {
   ScrollView,
   Text,
-  TextInput,
   TouchableOpacity,
+  View,
 } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
+// expo install @react-native-picker/picker
+
 
 import { Vista } from '../types/Vista';
 import BackButton from '../../components/BackButton';
 import commonStyles from './styles/commonstyles';
+import { useUsuarios } from '../hooks/useUsuarios';
 
 export default function NuevoEquipoScreen({
   setVista,
 }: {
   setVista: (v: Vista) => void;
 }) {
-  const [estado, setEstado] = useState('Operativo');
-  const [departamento, setDepartamento] = useState('');
-  const [ubicacion, setUbicacion] = useState('Sede');
+  const { usuarios } = useUsuarios();
+
+  const [usuarioId, setUsuarioId] = useState<number | null>(null);
+  const [departamentoId, setDepartamentoId] = useState<number | null>(null);
 
   const handleSubmit = () => {
-    if (!estado || !departamento || !ubicacion) {
-      alert('Completa todos los campos');
+    if (!usuarioId || !departamentoId) {
+      alert('Selecciona usuario y departamento');
       return;
     }
 
     const nuevoEquipo = {
-      estado,
-      departamento,
-      ubicacion,
+      usuario_id: usuarioId,
+      departamento_id: departamentoId,
       fecha_control: new Date().toISOString(),
-      tiene_problema: false,
-      usuario_id: 3, // Sin Asignar
     };
 
     console.log('POST /equipos', nuevoEquipo);
 
-    // 👉 aquí después va el POST real
-    alert('Equipo creado (mock)');
+    // 👉 aquí va el POST real después
+    alert('Equipo creado correctamente');
     setVista('equipos');
   };
 
@@ -48,34 +50,39 @@ export default function NuevoEquipoScreen({
     >
       <BackButton onPress={() => setVista('equipos')} />
 
-      <Text style={commonStyles.title}>
-        Nuevo Equipo
-      </Text>
+      <Text style={commonStyles.title}>Nuevo Equipo</Text>
 
-      {/* ESTADO */}
-      <Text style={commonStyles.label}>Estado</Text>
-      <TextInput
-        style={commonStyles.input}
-        value={estado}
-        onChangeText={setEstado}
-      />
+      {/* USUARIO */}
+      <Text style={commonStyles.label}>Usuario</Text>
+      <View style={commonStyles.input}>
+        <Picker
+          selectedValue={usuarioId}
+          onValueChange={(value) => {
+            setUsuarioId(value);
+            const usuario = usuarios.find(u => u.id === value);
+            if (usuario) {
+              setDepartamentoId(usuario.departamento_id);
+            }
+          }}
+        >
+          <Picker.Item label="Selecciona un usuario" value={null} />
+          {usuarios.map(u => (
+            <Picker.Item
+              key={u.id}
+              label={u.nombre}
+              value={u.id}
+            />
+          ))}
+        </Picker>
+      </View>
 
-      {/* DEPARTAMENTO */}
+      {/* DEPARTAMENTO (AUTOMÁTICO) */}
       <Text style={commonStyles.label}>Departamento</Text>
-      <TextInput
-        style={commonStyles.input}
-        placeholder="Ej: Mantención, Flota"
-        value={departamento}
-        onChangeText={setDepartamento}
-      />
-
-      {/* UBICACIÓN */}
-      <Text style={commonStyles.label}>Ubicación</Text>
-      <TextInput
-        style={commonStyles.input}
-        value={ubicacion}
-        onChangeText={setUbicacion}
-      />
+      <View style={commonStyles.card}>
+        <Text style={commonStyles.textMuted}>
+          {usuarios.find(u => u.id === usuarioId)?.departamento ?? '—'}
+        </Text>
+      </View>
 
       <TouchableOpacity
         style={commonStyles.successButton}
