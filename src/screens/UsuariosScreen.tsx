@@ -1,15 +1,13 @@
 import { ScrollView, Text, View, TouchableOpacity } from 'react-native';
-import { useEquipos } from '../hooks/useEquipos';
+import { useUsuarios } from '../hooks/useUsuarios';
 import { Vista } from '../types/Vista';
 import BackButton from '../../components/BackButton';
 import commonStyles from './styles/commonstyles';
+import { useEffect } from 'react';
 
-export default function UsuariosScreen({
-  setVista,
-}: {
-  setVista: (v: Vista) => void;
-}) {
-  const { equipos } = useEquipos();
+
+export default function UsuariosScreen({ setVista }: { setVista: (v: Vista) => void }) {
+  const { usuarios } = useUsuarios();
 
   return (
     <ScrollView
@@ -27,18 +25,17 @@ export default function UsuariosScreen({
         </Text>
       </TouchableOpacity>
 
-      {equipos
-        .filter(e => e.usuario)
-        .map(e => (
-          <View key={`${e.id}-${e.usuario!.id}`} style={commonStyles.card}>
-            <Text style={commonStyles.cardTitle}>
-              {e.usuario!.nombre}
-            </Text>
-            <Text style={commonStyles.textMuted}>
-              Equipo #{e.id}
-            </Text>
-          </View>
-        ))}
+      {usuarios.map(u => (
+      <View key={u.id} style={commonStyles.card}>
+        <Text style={commonStyles.cardTitle}>
+          #{u.id} – {u.nombre}
+       </Text>
+       <Text style={commonStyles.textMuted}>
+         {u.departamento}
+       </Text>
+      </View>
+    ))}
+
     </ScrollView>
   );
 }
