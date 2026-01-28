@@ -1,4 +1,5 @@
 import { apiFetch } from './client';
+import type { Componente } from '../types/api';
 
 export interface EquipoComponente {
   equipo_id: number;
@@ -9,6 +10,12 @@ export interface EquipoComponente {
   descripcion: string;
 }
 
+/** Componentes asignados a equipos */
 export const getEquipoComponentes = () => {
   return apiFetch<EquipoComponente[]>('/equipo-componentes');
+};
+
+/** Componentes disponibles */
+export const getComponentes = () => {
+  return apiFetch<Componente[]>('/componentes');
 };

@@ -1,8 +1,15 @@
-import { View, Text, ActivityIndicator, Pressable } from 'react-native';
+import {
+  View,
+  Text,
+  ActivityIndicator,
+  Pressable,
+} from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
-import { useState } from 'react';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+
 import { useProblemas } from '../hooks/useProblemas';
-import { solucionarProblema } from '../api/problemas';
+import { useSolucionarProblema } from '../hooks/useSolucionarProblema';
+import type { ProblemasStackParamList } from '../navigation/stacks/ProblemasStack';
 
 type RouteParams = {
   problemaId: number;
@@ -10,12 +17,19 @@ type RouteParams = {
 
 export default function ProblemaDetalleScreen() {
   const route = useRoute();
-  const navigation = useNavigation();
   const { problemaId } = route.params as RouteParams;
 
+  const navigation =
+    useNavigation<NativeStackNavigationProp<ProblemasStackParamList>>();
+
   const { problemas, loading, error, reload } = useProblemas();
-  const [saving, setSaving] = useState(false);
-  const [actionError, setActionError] = useState<string | null>(null);
+
+  const {
+    problema: problemaActualizado,
+    loading: saving,
+    error: actionError,
+    solucionar,
+  } = useSolucionarProblema(problemaId);
 
   if (loading) {
     return (
@@ -28,17 +42,23 @@ export default function ProblemaDetalleScreen() {
   if (error) {
     return (
       <View className="flex-1 items-center justify-center bg-white px-6">
-        <Text className="text-red-600 text-center">{error}</Text>
+        <Text className="text-red-600 text-center">
+          {error}
+        </Text>
       </View>
     );
   }
 
-  const problema = problemas.find((p) => p.id === problemaId);
+  const problema =
+    problemaActualizado ??
+    problemas.find((p) => p.id === problemaId);
 
   if (!problema) {
     return (
       <View className="flex-1 items-center justify-center bg-white">
-        <Text className="text-gray-500">Problema no encontrado</Text>
+        <Text className="text-gray-500">
+          Problema no encontrado
+        </Text>
       </View>
     );
   }
@@ -46,17 +66,9 @@ export default function ProblemaDetalleScreen() {
   const esPendiente = !problema.reparado;
 
   const resolver = async () => {
-    try {
-      setSaving(true);
-      setActionError(null);
-      await solucionarProblema(problema.id);
-      await reload();
-      navigation.goBack();
-    } catch (e: any) {
-      setActionError(e.message ?? 'No se pudo resolver el problema');
-    } finally {
-      setSaving(false);
-    }
+    await solucionar();
+    await reload();
+    navigation.goBack();
   };
 
   return (
@@ -90,7 +102,9 @@ export default function ProblemaDetalleScreen() {
 
       {/* Descripción */}
       <View className="mb-6">
-        <Text className="text-gray-500 text-sm mb-1">Descripción</Text>
+        <Text className="text-gray-500 text-sm mb-1">
+          Descripción
+        </Text>
         <Text className="text-gray-800">
           {problema.descripcion}
         </Text>
