@@ -2,11 +2,13 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import EquiposScreen from '../../screens/EquiposScreen';
 import EquipoDetalleScreen from '../../screens/EquipoDetalleScreen';
 import AsignarComponenteScreen from '../../screens/AsignarComponenteScreen';
+import EquipoFormScreen from '../../screens/EquipoFormScreen';
 
 export type EquiposStackParamList = {
   EquiposMain: undefined;
   EquipoDetalle: { equipoId: number };
   AsignarComponente: { equipoId: number };
+  EquipoForm: { equipoId?: number };
 };
 
 const Stack = createNativeStackNavigator<EquiposStackParamList>();
@@ -28,6 +30,11 @@ export default function EquiposStack() {
         name="AsignarComponente"
         component={AsignarComponenteScreen}
         options={{ title: 'Asignar componente' }}
+      />
+      <Stack.Screen
+        name="EquipoForm"
+        component={EquipoFormScreen}
+        options={{ title: 'Equipo' }}
       />
     </Stack.Navigator>
   );

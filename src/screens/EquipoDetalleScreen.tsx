@@ -4,17 +4,14 @@ import {
   ActivityIndicator,
   ScrollView,
   Button,
+  Alert,
 } from 'react-native';
-import {
-  useRoute,
-  useNavigation,
-  useFocusEffect,
-} from '@react-navigation/native';
+import { useRoute, useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { useCallback } from 'react';
 
 import { useEquipos } from '../hooks/useEquipos';
 import { useComponentesPorEquipo } from '../hooks/useComponentesPorEquipo';
+import { useEliminarEquipo } from '../hooks/useEliminarEquipo';
 import type { EquiposStackParamList } from '../navigation/stacks/EquiposStack';
 
 type RouteParams = {
@@ -34,15 +31,13 @@ export default function EquipoDetalleScreen() {
     componentes,
     loading: loadingComponentes,
     error: errorComponentes,
-    reload,
   } = useComponentesPorEquipo(equipoId);
 
-  // 🔄 Refrescar componentes cada vez que la pantalla vuelve a estar activa
-  useFocusEffect(
-    useCallback(() => {
-      reload();
-    }, [reload])
-  );
+  const {
+    eliminar,
+    loading: deleting,
+    error: deleteError,
+  } = useEliminarEquipo(equipoId);
 
   if (loading) {
     return (
@@ -70,6 +65,24 @@ export default function EquipoDetalleScreen() {
     );
   }
 
+  const confirmarEliminacion = () => {
+    Alert.alert(
+      'Eliminar equipo',
+      'Esta acción no se puede deshacer. ¿Deseas continuar?',
+      [
+        { text: 'Cancelar', style: 'cancel' },
+        {
+          text: 'Eliminar',
+          style: 'destructive',
+          onPress: async () => {
+            await eliminar();
+            navigation.navigate('EquiposMain');
+          },
+        },
+      ]
+    );
+  };
+
   return (
     <ScrollView className="flex-1 bg-white p-4">
       {/* Datos del equipo */}
@@ -89,20 +102,37 @@ export default function EquipoDetalleScreen() {
         Estado: {equipo.estado}
       </Text>
 
-      {equipo.fecha_control && (
-        <Text className="text-gray-400 text-xs mt-2">
-          Último control: {equipo.fecha_control}
-        </Text>
-      )}
-
-      {/* Acción */}
-      <View className="mt-6">
+      {/* Acciones */}
+      <View className="mt-6 gap-3">
+        {/* Acción principal */}
         <Button
           title="Asignar componente"
           onPress={() =>
             navigation.navigate('AsignarComponente', { equipoId })
           }
         />
+
+        {/* Acción secundaria */}
+        <Button
+          title="Editar equipo"
+          onPress={() =>
+            navigation.navigate('EquipoForm', { equipoId })
+          }
+        />
+
+        {/* Acción destructiva */}
+        <Button
+          title={deleting ? 'Eliminando…' : 'Eliminar equipo'}
+          color="red"
+          onPress={confirmarEliminacion}
+          disabled={deleting}
+        />
+
+        {deleteError && (
+          <Text className="text-red-600 text-sm text-center">
+            {deleteError}
+          </Text>
+        )}
       </View>
 
       {/* Componentes */}
@@ -129,9 +159,9 @@ export default function EquipoDetalleScreen() {
           </Text>
         )}
 
-        {componentes.map((c, index) => (
+        {componentes.map((c) => (
           <View
-            key={`${c.equipo_id}-${c.componente_id}-${index}`}
+            key={`${c.equipo_id}-${c.componente_id}`}
             className="mb-2 rounded-lg border border-gray-200 p-3"
           >
             <Text className="font-medium">{c.nombre}</Text>
@@ -139,12 +169,6 @@ export default function EquipoDetalleScreen() {
             <Text className="text-gray-400 text-xs">
               Cantidad: {c.cantidad}
             </Text>
-
-            {c.descripcion && (
-              <Text className="text-gray-400 text-xs mt-1">
-                {c.descripcion}
-              </Text>
-            )}
           </View>
         ))}
       </View>

@@ -4,13 +4,17 @@ import {
   FlatList,
   ActivityIndicator,
   Pressable,
+  Button,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useEquipos } from '../hooks/useEquipos';
 import type { EquiposStackParamList } from '../navigation/stacks/EquiposStack';
 
-type NavProp = NativeStackNavigationProp<EquiposStackParamList, 'EquiposMain'>;
+type NavProp = NativeStackNavigationProp<
+  EquiposStackParamList,
+  'EquiposMain'
+>;
 
 export default function EquiposScreen() {
   const { equipos, loading, error, reload } = useEquipos();
@@ -38,16 +42,18 @@ export default function EquiposScreen() {
     );
   }
 
-  if (!equipos || equipos.length === 0) {
-    return (
-      <View className="flex-1 items-center justify-center bg-white">
-        <Text className="text-gray-500">No hay equipos registrados</Text>
-      </View>
-    );
-  }
-
   return (
     <View className="flex-1 bg-white">
+      {/* Acción principal */}
+      <View className="p-4">
+        <Button
+          title="Crear equipo"
+          onPress={() =>
+            navigation.navigate('EquipoForm', {})
+          }
+        />
+      </View>
+
       <FlatList
         data={equipos}
         keyExtractor={(item) => String(item.id)}
@@ -57,7 +63,9 @@ export default function EquiposScreen() {
         renderItem={({ item }) => (
           <Pressable
             onPress={() =>
-              navigation.navigate('EquipoDetalle', { equipoId: item.id })
+              navigation.navigate('EquipoDetalle', {
+                equipoId: item.id,
+              })
             }
           >
             <View className="mb-3 rounded-xl border border-gray-200 p-4">
@@ -68,7 +76,9 @@ export default function EquiposScreen() {
 
                 {item.tiene_problema && (
                   <View className="px-2 py-1 rounded-full bg-red-100">
-                    <Text className="text-xs text-red-700">Con problemas</Text>
+                    <Text className="text-xs text-red-700">
+                      Con problemas
+                    </Text>
                   </View>
                 )}
               </View>

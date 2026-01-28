@@ -5,7 +5,7 @@ export type Equipo = {
   ubicacion: string;
   tiene_problema: boolean;
   fecha_control: string | null;
-};
+}
 
 export interface Problema {
   id: number;
@@ -22,3 +22,4 @@ export interface Componente {
   nombre: string;
   tipo: string;
 }
+

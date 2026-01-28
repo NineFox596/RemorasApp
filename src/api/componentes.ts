@@ -2,6 +2,7 @@ import { apiFetch } from './client';
 import type { Componente } from '../types/api';
 
 export interface EquipoComponente {
+  id: number; 
   equipo_id: number;
   componente_id: number;
   nombre: string;
