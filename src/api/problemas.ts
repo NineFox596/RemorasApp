@@ -14,3 +14,13 @@ export const solucionarProblema = (id: number) => {
     method: 'PUT',
   });
 };
+
+export const reportarProblemaEquipo = (
+  equipoId: number,
+  descripcion: string
+) => {
+  return apiFetch(`/problemas/equipo/${equipoId}`, {
+    method: 'POST',
+    body: JSON.stringify({ descripcion }),
+  });
+};
