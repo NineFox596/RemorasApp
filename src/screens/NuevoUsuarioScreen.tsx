@@ -4,36 +4,53 @@ import {
   ScrollView,
   TextInput,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 
 import { Vista } from '../types/Vista';
 import BackButton from '../../components/BackButton';
 import commonStyles from './styles/commonstyles';
+import { crearUsuario } from '../api/usuarios';
 
-export default function NuevoUsuarioScreen({
-  setVista,
-}: {
+type Props = {
   setVista: (v: Vista) => void;
-}) {
-  const [nombre, setNombre] = useState('');
-  const [email, setEmail] = useState('');
-  const [departamento, setDepartamento] = useState('');
+};
 
-  const handleSubmit = () => {
-    if (!nombre || !email || !departamento) {
-      alert('Completa todos los campos');
+export default function NuevoUsuarioScreen({ setVista }: Props) {
+  const [nombre, setNombre] = useState('');
+  const [rut, setRut] = useState('');
+  const [departamento, setDepartamento] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async () => {
+    if (loading) return;
+
+    if (!nombre.trim() || !rut.trim() || !departamento.trim()) {
+      Alert.alert('Error', 'Completa todos los campos');
       return;
     }
 
-    // 👉 acá después llamas a tu API
-    console.log({
-      nombre,
-      email,
-      departamento,
-    });
+    try {
+      setLoading(true);
 
-    alert('Usuario creado (mock)');
-    setVista('usuarios');
+      await crearUsuario({
+        nombre: nombre.trim(),
+        rut: rut.trim(),
+        departamento_id: Number(departamento), // suponiendo que tu backend espera un número
+      });
+
+      Alert.alert('OK', 'Usuario creado correctamente', [
+        { text: 'Aceptar', onPress: () => setVista('usuarios') },
+      ]);
+    } catch (err: any) {
+      console.error('Error al crear usuario:', err);
+      Alert.alert(
+        'Error',
+        err?.response?.data?.message || 'No se pudo crear el usuario'
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -44,46 +61,50 @@ export default function NuevoUsuarioScreen({
     >
       <BackButton onPress={() => setVista('usuarios')} />
 
-      <Text style={commonStyles.title}>
-        Nuevo Usuario
-      </Text>
+      <Text style={commonStyles.title}>Nuevo Usuario</Text>
 
-      {/* NOMBRE */}
       <Text style={commonStyles.label}>Nombre</Text>
       <TextInput
         style={commonStyles.input}
         placeholder="Ej: Juan Pérez"
         value={nombre}
         onChangeText={setNombre}
+        editable={!loading}
+        returnKeyType="next"
       />
 
-      {/* EMAIL */}
-      <Text style={commonStyles.label}>Email</Text>
+      <Text style={commonStyles.label}>RUT</Text>
       <TextInput
         style={commonStyles.input}
-        placeholder="correo@empresa.cl"
-        keyboardType="email-address"
-        autoCapitalize="none"
-        value={email}
-        onChangeText={setEmail}
+        placeholder="Ej: 12345678-9"
+        value={rut}
+        onChangeText={setRut}
+        editable={!loading}
+        returnKeyType="next"
       />
 
-      {/* DEPARTAMENTO */}
-      <Text style={commonStyles.label}>Departamento</Text>
+      <Text style={commonStyles.label}>Departamento ID</Text>
       <TextInput
         style={commonStyles.input}
-        placeholder="Ej: Flota, Robot, Mantención"
+        placeholder="Ej: 1"
         value={departamento}
         onChangeText={setDepartamento}
+        keyboardType="numeric"
+        editable={!loading}
+        returnKeyType="done"
+        onSubmitEditing={handleSubmit}
       />
 
-      {/* BOTÓN */}
       <TouchableOpacity
-        style={commonStyles.successButton}
+        style={[
+          commonStyles.successButton,
+          loading && { opacity: 0.6 },
+        ]}
         onPress={handleSubmit}
+        disabled={loading}
       >
         <Text style={commonStyles.successButtonText}>
-          Guardar usuario
+          {loading ? 'Guardando...' : 'Guardar usuario'}
         </Text>
       </TouchableOpacity>
     </ScrollView>
