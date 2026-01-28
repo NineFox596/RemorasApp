@@ -92,8 +92,11 @@ export default function EquiposScreen({
                 Usuario asignado
               </Text>
               <Text style={commonStyles.textMuted}>
-                {e.usuario?.nombre ?? 'No asignado'}
+                {e.usuario
+                ? `${e.usuario.nombre} – ${e.departamento}`
+                : 'No asignado'}
               </Text>
+
             </View>
 
             {/* EXPAND – SOLO COMPONENTES */}
