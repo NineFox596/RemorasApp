@@ -2,12 +2,19 @@ export interface Equipo {
   id: number;
   estado: string;
   departamento: string;
-  ubicacion: string;
-
   usuario?: {
     id: number;
     nombre: string;
-  } | null;
+  };
+}
+
+
+export interface Usuario {
+  id: number;
+  nombre: string;
+  rut: string | null;
+  departamento_id: number;
+  departamento: string;
 }
 
 
