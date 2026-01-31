@@ -106,11 +106,23 @@ export default function EquipoDetalleScreen() {
       <View className="mt-6 gap-3">
         {/* Acción principal */}
         <Button
-          title="Asignar componente"
+          title={
+            equipo.estado === 'Fuera de servicio'
+              ? 'No se puede asignar (fuera de servicio)'
+              : 'Asignar componente'
+          }
           onPress={() =>
             navigation.navigate('AsignarComponente', { equipoId })
           }
+          disabled={equipo.estado === 'Fuera de servicio'}
         />
+
+        {equipo.estado === 'Fuera de servicio' && (
+          <Text className="text-orange-600 text-sm text-center mt-2">
+            Este equipo está fuera de servicio y no admite asignación de componentes.
+          </Text>
+        )}
+
 
         {/* Acción secundaria */}
         <Button
@@ -122,14 +134,26 @@ export default function EquipoDetalleScreen() {
 
         {/* Acción destructiva */}
         <Button
-          title={deleting ? 'Eliminando…' : 'Eliminar equipo'}
+          title={
+            equipo.tiene_problema
+              ? 'No se puede eliminar (problemas activos)'
+              : deleting
+              ? 'Eliminando…'
+              : 'Eliminar equipo'
+          }
           color="red"
           onPress={confirmarEliminacion}
-          disabled={deleting}
+          disabled={deleting || equipo.tiene_problema}
         />
 
+        {equipo.tiene_problema && (
+          <Text className="text-red-600 text-sm text-center mt-2">
+            Este equipo tiene problemas activos y no puede ser eliminado.
+          </Text>
+        )}
+
         {deleteError && (
-          <Text className="text-red-600 text-sm text-center">
+          <Text className="text-red-600 text-sm text-center mt-2">
             {deleteError}
           </Text>
         )}
@@ -159,9 +183,9 @@ export default function EquipoDetalleScreen() {
           </Text>
         )}
 
-        {componentes.map((c) => (
+        {componentes.map((c, index) => (
           <View
-            key={`${c.equipo_id}-${c.componente_id}`}
+            key={`${c.equipo_id}-${c.componente_id}-${index}`}
             className="mb-2 rounded-lg border border-gray-200 p-3"
           >
             <Text className="font-medium">{c.nombre}</Text>

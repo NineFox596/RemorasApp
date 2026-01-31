@@ -11,7 +11,9 @@ yarn add react-navigation
 yarn add @react-navigation/native  
 yarn add @react-navigation/native-stack  
 yarn add @react-navigation/bottom-tabs  
+expo install @react-native-community/netinfo  
 npx expo install react-native-screens react-native-safe-area-context
+npx expo install @react-native-community/netinfo
 
 Tras creacion de proyecto, crear un archivo .env
 

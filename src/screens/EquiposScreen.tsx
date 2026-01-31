@@ -29,18 +29,21 @@ export default function EquiposScreen() {
     );
   }
 
-  if (error && equipos.length === 0) {
-    return (
-      <View className="flex-1 items-center justify-center bg-white px-6">
-        <Text className="text-red-600 text-center">
-          Ocurrió un error al cargar los equipos
-        </Text>
-        <Text className="text-gray-500 text-center mt-2">
-          {error}
-        </Text>
-      </View>
-    );
-  }
+  <View className="flex-1 items-center justify-center bg-white px-6">
+    <Text className="text-red-600 text-center mb-2">
+      {error}
+    </Text>
+
+    <Pressable
+      className="mt-2 px-4 py-2 rounded-lg bg-black"
+      onPress={reload}
+    >
+      <Text className="text-white font-medium">
+        Reintentar
+      </Text>
+    </Pressable>
+  </View>
+
 
   return (
     <View className="flex-1 bg-white">

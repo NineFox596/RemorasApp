@@ -65,7 +65,12 @@ export default function ProblemaDetalleScreen() {
 
   const esPendiente = !problema.reparado;
 
+  /* ===== Regla 5.3.3 ===== */
   const resolver = async () => {
+    if (!esPendiente) {
+      return; // protección lógica: no ejecutar dos veces
+    }
+
     await solucionar();
     await reload();
     navigation.goBack();
@@ -151,7 +156,7 @@ export default function ProblemaDetalleScreen() {
       ) : (
         <View className="mt-auto p-4 items-center">
           <Text className="text-gray-400 text-sm">
-            No hay acciones disponibles para este problema.
+            Este problema ya fue solucionado y no admite más acciones.
           </Text>
         </View>
       )}

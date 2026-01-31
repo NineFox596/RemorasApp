@@ -5,7 +5,7 @@ import {
   Pressable,
   ActivityIndicator,
 } from 'react-native';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { RouteProp, useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
@@ -48,6 +48,23 @@ export default function EquipoFormScreen({
       setEstado(equipo.estado);
     }
   }, [equipo]);
+
+  /* ===== Regla 5.3.2 ===== */
+
+  const valoresOriginales = useMemo(() => {
+    if (!equipo) return null;
+    return {
+      departamento: equipo.departamento,
+      ubicacion: equipo.ubicacion,
+      estado: equipo.estado,
+    };
+  }, [equipo]);
+
+  const hayCambios =
+    !valoresOriginales ||
+    departamento !== valoresOriginales.departamento ||
+    ubicacion !== valoresOriginales.ubicacion ||
+    estado !== valoresOriginales.estado;
 
   const payload =
     departamento && ubicacion && estado
@@ -94,11 +111,19 @@ export default function EquipoFormScreen({
         </Text>
       )}
 
+      {isEdit && !hayCambios && (
+        <Text className="text-gray-500 text-sm mb-3">
+          No hay cambios para guardar.
+        </Text>
+      )}
+
       <Pressable
         className={`p-4 rounded-xl items-center ${
-          loading ? 'bg-gray-400' : 'bg-black'
+          loading || !payload || !hayCambios
+            ? 'bg-gray-400'
+            : 'bg-black'
         }`}
-        disabled={!payload || loading}
+        disabled={!payload || !hayCambios || loading}
         onPress={async () => {
           await guardar();
           navigation.goBack();

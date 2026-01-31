@@ -31,21 +31,22 @@ export default function ProblemasScreen() {
   if (error && problemas.length === 0) {
     return (
       <View className="flex-1 items-center justify-center bg-white px-6">
-        <Text className="text-red-600 text-center mb-3">
-          Ocurrió un error al cargar los problemas
-        </Text>
-        <Text className="text-gray-500 text-center mb-4">
+        <Text className="text-red-600 text-center mb-2">
           {error}
         </Text>
+
         <Pressable
+          className="mt-2 px-4 py-2 rounded-lg bg-black"
           onPress={reload}
-          className="px-4 py-2 rounded-lg bg-black"
         >
-          <Text className="text-white">Reintentar</Text>
+          <Text className="text-white font-medium">
+            Reintentar
+          </Text>
         </Pressable>
       </View>
     );
   }
+
 
   if (!problemas || problemas.length === 0) {
     return (

@@ -37,21 +37,25 @@ export default function AsignarComponenteScreen({
   const [componenteId, setComponenteId] = useState<number | null>(null);
   const [cantidad, setCantidad] = useState('1');
 
+  /* ===== Regla 5.3.1 ===== */
+  const cantidadNumero = Number(cantidad);
+  const cantidadValida =
+    Number.isInteger(cantidadNumero) && cantidadNumero > 0;
+
   const {
     asignar,
     loading: saving,
     error: actionError,
   } = useAsignarComponente(
-    componenteId
+    componenteId && cantidadValida
       ? {
           equipoId,
           componenteId,
-          cantidad: Number(cantidad),
+          cantidad: cantidadNumero,
         }
       : null
   );
 
-  // Cargar componentes al entrar
   useEffect(() => {
     reload();
   }, [reload]);
@@ -108,6 +112,13 @@ export default function AsignarComponenteScreen({
         placeholder="Cantidad"
       />
 
+      {/* Feedback de validación */}
+      {!cantidadValida && (
+        <Text className="text-red-600 text-sm mt-2">
+          La cantidad debe ser un número entero mayor a 0.
+        </Text>
+      )}
+
       {actionError && (
         <Text className="text-red-600 mt-2">
           {actionError}
@@ -116,9 +127,13 @@ export default function AsignarComponenteScreen({
 
       <Pressable
         className={`mt-4 p-4 rounded-xl items-center ${
-          saving ? 'bg-gray-400' : 'bg-black'
+          saving || !componenteId || !cantidadValida
+            ? 'bg-gray-400'
+            : 'bg-black'
         }`}
-        disabled={!componenteId || saving}
+        disabled={
+          !componenteId || !cantidadValida || saving
+        }
         onPress={async () => {
           await asignar();
           navigation.goBack();

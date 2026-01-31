@@ -6,20 +6,31 @@ if (!API_URL) {
 
 export async function apiFetch<T>(
   endpoint: string,
-  options: RequestInit = {}
+  options?: RequestInit
 ): Promise<T> {
-  const response = await fetch(`${API_URL}${endpoint}`, {
-    headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-    ...options,
-  });
+  try {
+    const response = await fetch(`${API_URL}${endpoint}`, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      ...options,
+    });
 
-  if (!response.ok) {
-    const text = await response.text();
-    throw new Error(text || 'Error en la API');
+    if (!response.ok) {
+      const text = await response.text();
+      throw new Error(
+        text || 'Error en el servidor'
+      );
+    }
+
+    return response.json();
+  } catch (error: any) {
+    if (error.message === 'Network request failed') {
+      throw new Error(
+        'No hay conexión con el servidor. Revisa tu conexión a internet.'
+      );
+    }
+
+    throw error;
   }
-
-  return response.json();
 }
