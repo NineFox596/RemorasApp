@@ -7,12 +7,28 @@ export function useEquipos() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const fetchEquipos = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const equipos = await getEquipos();
+      setData(equipos);
+    } catch (err: any) {
+      setError(err.message || 'Error al cargar equipos');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    getEquipos()
-      .then(setData)
-      .catch(err => setError(err.message))
-      .finally(() => setLoading(false));
+    fetchEquipos();
   }, []);
 
-  return { equipos: data, loading, error };
+  return {
+    equipos: data,
+    loading,
+    error,
+    refetch: fetchEquipos, // 👈 ESTO ES LO IMPORTANTE
+  };
 }
