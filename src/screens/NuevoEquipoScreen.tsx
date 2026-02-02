@@ -4,15 +4,15 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Alert,
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-// expo install @react-native-picker/picker
-
 
 import { Vista } from '../types/Vista';
 import BackButton from '../../components/BackButton';
 import commonStyles from './styles/commonstyles';
 import { useUsuarios } from '../hooks/useUsuarios';
+import { crearEquipo } from '../api/equipos';
 
 export default function NuevoEquipoScreen({
   setVista,
@@ -23,10 +23,11 @@ export default function NuevoEquipoScreen({
 
   const [usuarioId, setUsuarioId] = useState<number | null>(null);
   const [departamentoId, setDepartamentoId] = useState<number | null>(null);
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!usuarioId || !departamentoId) {
-      alert('Selecciona usuario y departamento');
+      Alert.alert('Error', 'Selecciona usuario y departamento');
       return;
     }
 
@@ -36,11 +37,20 @@ export default function NuevoEquipoScreen({
       fecha_control: new Date().toISOString(),
     };
 
-    console.log('POST /equipos', nuevoEquipo);
+    try {
+      setLoading(true);
 
-    // 👉 aquí va el POST real después
-    alert('Equipo creado correctamente');
-    setVista('equipos');
+      await crearEquipo(nuevoEquipo);
+
+      Alert.alert('OK', 'Equipo creado correctamente', [
+        { text: 'Aceptar', onPress: () => setVista('equipos') },
+      ]);
+    } catch (err: any) {
+      console.error('Error al crear equipo:', err);
+      Alert.alert('Error', 'No se pudo crear el equipo');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -59,19 +69,16 @@ export default function NuevoEquipoScreen({
           selectedValue={usuarioId}
           onValueChange={(value) => {
             setUsuarioId(value);
-            const usuario = usuarios.find(u => u.id === value);
+            const usuario = usuarios.find((u) => u.id === value);
             if (usuario) {
               setDepartamentoId(usuario.departamento_id);
             }
           }}
+          enabled={!loading}
         >
           <Picker.Item label="Selecciona un usuario" value={null} />
-          {usuarios.map(u => (
-            <Picker.Item
-              key={u.id}
-              label={u.nombre}
-              value={u.id}
-            />
+          {usuarios.map((u) => (
+            <Picker.Item key={u.id} label={u.nombre} value={u.id} />
           ))}
         </Picker>
       </View>
@@ -80,16 +87,21 @@ export default function NuevoEquipoScreen({
       <Text style={commonStyles.label}>Departamento</Text>
       <View style={commonStyles.card}>
         <Text style={commonStyles.textMuted}>
-          {usuarios.find(u => u.id === usuarioId)?.departamento ?? '—'}
+          {usuarios.find((u) => u.id === usuarioId)?.departamento ?? '—'}
         </Text>
       </View>
 
+      {/* BOTÓN GUARDAR */}
       <TouchableOpacity
-        style={commonStyles.successButton}
+        style={[
+          commonStyles.successButton,
+          loading && { opacity: 0.6 },
+        ]}
         onPress={handleSubmit}
+        disabled={loading}
       >
         <Text style={commonStyles.successButtonText}>
-          Guardar equipo
+          {loading ? 'Guardando...' : 'Guardar equipo'}
         </Text>
       </TouchableOpacity>
     </ScrollView>
