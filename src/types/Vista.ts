@@ -4,6 +4,7 @@ export type Vista =
   | 'nuevoUsuario'
   | 'equipos'
   | 'nuevoEquipo'
+  | 'editarEquipo'
   | 'problemas'
   | 'componentes'
   | 'login';
