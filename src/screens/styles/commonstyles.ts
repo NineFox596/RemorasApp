@@ -1,6 +1,7 @@
 import { StyleSheet } from 'react-native';
 
 const commonStyles = StyleSheet.create({
+  /* ===== SCREEN / LAYOUT ===== */
   screen: {
     flex: 1,
     backgroundColor: '#fff',
@@ -11,6 +12,61 @@ const commonStyles = StyleSheet.create({
     paddingBottom: 80,
   },
 
+  /* ===== TEXTOS GENERALES ===== */
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 16,
+    color: '#222',
+  },
+
+  subtitle: {
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 8,
+  },
+
+  sectionTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#333',
+    marginTop: 8,
+    marginBottom: 4,
+  },
+
+  label: {
+    fontSize: 16,
+    fontWeight: '600',
+    marginBottom: 6,
+    marginTop: 12,
+    color: '#111827',
+  },
+
+  meta: {
+    fontSize: 13,
+    color: '#888',
+    marginBottom: 4,
+  },
+
+  textMuted: {
+    color: '#6b7280',
+  },
+
+  warningButton: {
+  flex: 1,
+  backgroundColor: '#f39c12',
+  paddingVertical: 10,
+  borderRadius: 8,
+  alignItems: 'center',
+},
+
+warningButtonText: {
+  color: 'white',
+  fontWeight: 'bold',
+},
+
+
+  /* ===== CARDS ===== */
   card: {
     backgroundColor: '#f8fafc',
     padding: 16,
@@ -26,10 +82,33 @@ const commonStyles = StyleSheet.create({
     marginBottom: 4,
   },
 
-  textMuted: {
-    color: '#6b7280',
+  expand: {
+    marginTop: 12,
+    paddingTop: 12,
+    borderTopWidth: 1,
+    borderColor: '#e5e7eb',
   },
 
+  /* ===== ESTADOS ===== */
+  status: {
+    fontWeight: 'bold',
+  },
+
+  statusOk: {
+    color: '#16a34a',
+  },
+
+  statusPending: {
+    color: '#dc2626',
+  },
+
+  problemDescription: {
+    marginTop: 8,
+    marginBottom: 10,
+    color: '#374151',
+  },
+
+  /* ===== BOTONES ===== */
   successButton: {
     backgroundColor: '#16a34a',
     paddingVertical: 14,
@@ -43,129 +122,121 @@ const commonStyles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '600',
   },
-  expand: {
-  marginTop: 12,
-  paddingTop: 12,
-  borderTopWidth: 1,
-  borderColor: '#e5e7eb',
-},
-problemDescription: {
-  marginTop: 8,
-  marginBottom: 10,
-  color: '#374151',
-},
 
-status: {
-  fontWeight: 'bold',
-},
+  addButton: {
+    backgroundColor: '#2563eb',
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 12,
+  },
 
-statusOk: {
-  color: '#16a34a', // verde
-},
+  addButtonText: {
+    color: '#fff',
+    textAlign: 'center',
+    fontWeight: 'bold',
+  },
 
-statusPending: {
-  color: '#dc2626', // rojo
-},
-// ...existing code...
-title: {
-  fontSize: 24,
-  fontWeight: 'bold',
-  marginBottom: 16,
-  color: '#222', // or your preferred color
-},
-// ...existing code...
-sectionTitle: {
-  fontSize: 14,
-  fontWeight: '600',
-  color: '#333',
-  marginTop: 8,
-  marginBottom: 4,
-},
-// ...existing code...
-userBox: {
-  backgroundColor: '#f5f5f5',
-  padding: 12,
-  borderRadius: 8,
-  marginTop: 10,
-  borderLeftWidth: 4,
-  borderLeftColor: '#007AFF',
-},
-label: {
-  fontSize: 16,
-  fontWeight: '600',
-  marginBottom: 6,
-  marginTop: 12,
-  color: '#111827',
-},
-input: {
-  borderWidth: 1,
-  borderColor: '#d1d5db',
-  borderRadius: 12,
-  paddingHorizontal: 14,
-  paddingVertical: 12,
-  fontSize: 16,
-  backgroundColor: '#fff',
-},
-// ...existing code...
+  confirmButton: {
+    backgroundColor: '#16a34a',
+    padding: 10,
+    borderRadius: 6,
+    marginTop: 10,
+  },
 
+  confirmButtonText: {
+    color: '#fff',
+    textAlign: 'center',
+    fontWeight: 'bold',
+  },
 
+  cancelText: {
+    textAlign: 'center',
+    color: '#dc2626',
+    marginTop: 8,
+  },
 
+  /* ===== INPUTS / SELECT ===== */
+  input: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 6,
+    padding: 8,
+    marginTop: 8,
+  },
 
-// ...existing code...
+  selectItem: {
+    padding: 10,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 6,
+    marginBottom: 6,
+  },
 
-/* ===== COMPONENTES ===== */
+  selectItemActive: {
+    backgroundColor: '#e0e7ff',
+  },
 
-componentCard: {
-  backgroundColor: '#fff',
-  borderRadius: 14,
-  padding: 14,
-  marginBottom: 14,
-  shadowColor: '#000',
-  shadowOpacity: 0.06,
-  shadowRadius: 6,
-  elevation: 2,
-},
+  /* ===== USUARIO ===== */
+  userBox: {
+    backgroundColor: '#f5f5f5',
+    padding: 12,
+    borderRadius: 8,
+    marginTop: 10,
+    borderLeftWidth: 4,
+    borderLeftColor: '#007AFF',
+  },
 
-componentHeader: {
-  flexDirection: 'row',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-},
+  /* ===== COMPONENTES ===== */
+  componentCard: {
+    backgroundColor: '#fff',
+    borderRadius: 14,
+    padding: 14,
+    marginBottom: 14,
+    shadowColor: '#000',
+    shadowOpacity: 0.06,
+    shadowRadius: 6,
+    elevation: 2,
+  },
 
-componentTitle: {
-  fontSize: 16,
-  fontWeight: 'bold',
-  color: '#111827',
-},
+  componentHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
 
-componentSubtitle: {
-  fontSize: 14,
-  color: '#6b7280',
-},
+  componentTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#111827',
+  },
 
-componentDetails: {
-  marginTop: 12,
-  paddingTop: 12,
-  borderTopWidth: 1,
-  borderTopColor: '#e5e7eb',
-},
+  componentSubtitle: {
+    fontSize: 14,
+    color: '#6b7280',
+  },
 
-componentRow: {
-  flexDirection: 'row',
-  justifyContent: 'space-between',
-  marginBottom: 6,
-},
+  componentDetails: {
+    marginTop: 12,
+    paddingTop: 12,
+    borderTopWidth: 1,
+    borderTopColor: '#e5e7eb',
+  },
 
-componentLabel: {
-  color: '#6b7280',
-  fontSize: 14,
-},
+  componentRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 6,
+  },
 
-componentValue: {
-  color: '#111827',
-  fontWeight: '500',
-},
+  componentLabel: {
+    color: '#6b7280',
+    fontSize: 14,
+  },
 
+  componentValue: {
+    color: '#111827',
+    fontWeight: '500',
+  },
 });
 
 export default commonStyles;
